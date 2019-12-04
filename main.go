@@ -11,7 +11,7 @@ import (
 // Doc about signals -> http://man7.org/linux/man-pages/man7/signal.7.html
 // (kill -9 <PID> == kill -SIGKILL <PID>) -> Kill signal
 
-func treatSignal(sig chan os.Signal, finesh_program chan int) {
+func handlerSignal(sig chan os.Signal, finesh_program chan int) {
 	for {
 		s := <-sig
 		switch s {
@@ -42,7 +42,7 @@ func main() {
 	exit_chan := make(chan int, 1)
 
 	// Up thread to listen and treatment all signals
-	go treatSignal(sig, exit_chan)
+	go handlerSignal(sig, exit_chan)
 
 	// Close channel to exit program
 	<-exit_chan
