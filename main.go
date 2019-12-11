@@ -11,7 +11,7 @@ import (
 // Doc about signals -> http://man7.org/linux/man-pages/man7/signal.7.html
 // (kill -9 <PID> == kill -SIGKILL <PID>) -> Kill signal
 
-func handlerSignal(sig chan os.Signal, finesh_program chan int) {
+func handlerSignal(sig chan os.Signal, fineshProgram chan int) {
 	for {
 		s := <-sig
 		switch s {
@@ -21,7 +21,7 @@ func handlerSignal(sig chan os.Signal, finesh_program chan int) {
 			fmt.Println("received signal USR1 I will return my unixtemp", time.Now().Unix())
 		case syscall.SIGTERM: // Termination signal
 			fmt.Println("I died")
-			finesh_program <- 1
+			fineshProgram <- 1
 			return // Finesh thread
 		}
 	}
@@ -39,13 +39,13 @@ func main() {
 	fmt.Println(os.Getpid())
 
 	// Created Chanel to close APP when finesh thread
-	exit_chan := make(chan int, 1)
+	exitChan := make(chan int, 1)
 
 	// Up thread to listen and treatment all signals
-	go handlerSignal(sig, exit_chan)
+	go handlerSignal(sig, exitChan)
 
 	// Close channel to exit program
-	<-exit_chan
+	<-exitChan
 
 	fmt.Println("Close program")
 }
